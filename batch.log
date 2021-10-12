@@ -1,0 +1,29 @@
+2021-10-12 13:42:36,090 - Server initialized, type=cg, server_initialization=0:00:00.010162
+2021-10-12 13:42:36,099 - Server initialized, type=fg, server_initialization=0:00:00.008192
+2021-10-12 13:48:28,085 - Server initialized, type=cg, server_initialization=0:00:00.097209
+2021-10-12 13:48:28,098 - Server initialized, type=fg, server_initialization=0:00:00.012065
+2021-10-12 13:48:42,897 - Server initialized, type=cg, server_initialization=0:00:00.099580
+2021-10-12 13:48:42,906 - Server initialized, type=fg, server_initialization=0:00:00.008473
+2021-10-12 13:49:00,585 - type=fg, annotator_id=2, len_blacklist=0, pass_id=0, batch_num=1, time=0:00:00.132029, ids=[], info=[('p2', 0, '0:00:00.005918'), ('p1', 0, '0:00:00.004721'), ('p2', 0, '0:00:00.004557'), ('p1', 0, '0:00:00.005168'), ('p2', 0, '0:00:00.005622'), ('p1', 0, '0:00:00.004468'), ('p2', 0, '0:00:00.004421'), ('p1', 0, '0:00:00.003813'), ('p2', 0, '0:00:00.003925'), ('p1', 0, '0:00:00.004124'), ('p2', 0, '0:00:00.005010'), ('p1', 0, '0:00:00.005331'), ('p2', 0, '0:00:00.004319'), ('p1', 0, '0:00:00.004030'), ('p2', 0, '0:00:00.004331')]
+2021-10-12 14:07:15,500 - Server initialized, type=cg, server_initialization=0:00:00.076918
+2021-10-12 14:07:15,512 - Server initialized, type=fg, server_initialization=0:00:00.011238
+2021-10-12 14:11:49,510 - Server initialized, type=cg, server_initialization=0:00:00.128580
+2021-10-12 14:11:49,518 - Server initialized, type=fg, server_initialization=0:00:00.007501
+2021-10-12 14:12:17,545 - Server initialized, type=cg, server_initialization=0:00:00.101941
+2021-10-12 14:12:17,554 - Server initialized, type=fg, server_initialization=0:00:00.007779
+2021-10-12 14:12:55,734 - Server initialized, type=cg, server_initialization=0:00:00.135756
+2021-10-12 14:12:55,743 - Server initialized, type=fg, server_initialization=0:00:00.008213
+2021-10-12 14:16:04,861 - Server initialized, type=cg, server_initialization=0:00:00.009254
+2021-10-12 14:16:04,869 - Server initialized, type=fg, server_initialization=0:00:00.007323
+2021-10-12 14:19:25,686 - Server initialized, type=cg, server_initialization=0:00:00.008606
+2021-10-12 14:19:25,697 - Server initialized, type=fg, server_initialization=0:00:00.010426
+2021-10-12 14:21:09,620 - Server initialized, type=cg, server_initialization=0:00:00.010045
+2021-10-12 14:21:09,629 - Server initialized, type=fg, server_initialization=0:00:00.008163
+2021-10-12 14:23:16,409 - Server initialized, type=cg, server_initialization=0:00:00.009987
+2021-10-12 14:23:16,419 - Server initialized, type=fg, server_initialization=0:00:00.008892
+2021-10-12 14:23:38,155 - Server initialized, type=cg, server_initialization=0:00:00.093550
+2021-10-12 14:23:38,163 - Server initialized, type=fg, server_initialization=0:00:00.007551
+2021-10-12 14:25:30,844 - Server initialized, type=cg, server_initialization=0:00:00.011709
+2021-10-12 14:25:30,853 - Server initialized, type=fg, server_initialization=0:00:00.008896
+2021-10-12 14:25:38,703 - type=cg, annotator_id=2, len_blacklist=10, pass_id=0, batch_num=1, time=0:00:00.034099, ids=[1, 3, 5, 7, 9, 11, 13, 15, 17, 19], info=[('p2', 10, '0:00:00.013505')]
+2021-10-12 14:25:51,130 - type=fg, annotator_id=2, len_blacklist=3, pass_id=0, batch_num=1, time=0:00:00.052532, ids=[1, 9, 17], info=[('p2', 3, '0:00:00.005470'), ('p1', 0, '0:00:00.005243'), ('p2', 0, '0:00:00.004973'), ('p1', 0, '0:00:00.006917')]

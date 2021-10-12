@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+
+{% block title %}Annotators Progress {% endblock %}
+{% block body %}
+
+    <div class="container-fluid">
+        <div class="row">
+            {#		<div class="col-sm-2"></div>#}
+            <div class="col">
+                <center>
+                    {#				<h3> {{info.get('client')}} <span class="label label-info">{{info.get('situation')}}</span></h3>#}
+                    {#				<p><b>Patient  : </b><code>{{info.get('patient')}}</code></p>#}
+
+                    <p style="margin-top: 20px;">
+
+
+                    <div style="height:25px;"></div>
+
+                    <hr>
+                    <form class="form-inline" method="GET" action="/admin/annotators_in_one_graph">
+
+
+                        <div class="input-group" style="margin-left: 2.5em;">
+                            {#						<div class="input-group-addon"><b>Patient</b></div>#}
+                            <label> <b>Frequency&nbsp;&nbsp;</b>
+                                <select class="form-control" name="freq">
+                                    {% for key, value in frequencies.items() %}
+                                        {#                                {{ key,  value  }}#}
+                                        {% if key ==  freq %}
+                                            <option selected value="{{ key }}">{{ value }}</option>
+                                        {% else %}
+                                            <option value="{{ key }}">{{ value }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+                            </label>
+
+                            <label> <b>&nbsp; Annotation type&nbsp;&nbsp;</b>
+                                <select class="form-control" name="annotationtype">
+                                    {% if annotationtype ==  'cg' %}
+                                        <option selected>cg</option>
+                                        <option>fg</option>
+                                    {% else %}
+                                        <option>cg</option>
+                                        <option selected>fg</option>
+                                    {% endif %}
+
+                                </select>
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-success" style="margin-left: 2.5em;">Go !</button>
+                    </form>
+                    <hr>
+                </center>
+                <div>
+                    <canvas id="canvas">
+                    </canvas>
+                </div>
+
+                <br>
+                <br>
+
+
+            </div>
+
+
+        </div>
+        {% block javascript %}
+            <!-- Bootstrap core JavaScript-->
+            {#  <script src="/static/vendor/jquery/jquery.min.js"></script>#}
+            <script src="/static/vendor/bootstrap/bootstrap.bundle.min.js"></script>
+
+            <!-- Core plugin JavaScript-->
+            <script src="/static/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+            <!-- Custom scripts for all pages-->
+            <script src="/static/js/lib/sb-admin-2.min.js"></script>
+
+            <!-- Page level plugins -->
+            <script src="/static/vendor/chart.js/Chart.min.js"></script>
+            <script src="/static/js/src/utils.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
+            <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@0.7.7"></script>
+            <script>
+
+                var color = Chart.helpers.color;
+
+
+                var barChartData = {
+                    {#labels: [{% for x in xticks %}#}
+                    {#    "{{x}}",#}
+                    {#{% endfor %}],#}
+                    datasets: [
+
+                        {%for key, values in annotators_dict.items() %}
+                            {
+
+                                type: 'bar',
+                                label: '{{ key }}',
+                                backgroundColor: color(window.chartColorsList[{{ loop.index }}]).rgbString(),
+                                borderColor: window.chartColors.green,
+                                data: [{{values[0][1]}}],
+                                labels: ["{{values[0][0]}}"],
+                                yAxisID: 'y-axis-1',    // ajout
+                            },
+
+                        {% endfor %}
+
+
+                ]
+                }
+                ;
+
+
+                window.onload = function () {
+                    var ctx = document.getElementById('canvas').getContext('2d');
+                    window.myBar = new Chart(ctx, {
+                        type: 'bar',
+                        data: barChartData,
+                        options: {
+                            responsive: true,
+
+                            tooltips: {
+                                mode: 'index',
+                                intersect: false
+                            },
+                            // ajouter ici
+                            scales: {
+                                xAxes: [{
+                                    display: true,
+                                    {#stacked: true,#}
+                                    offset: true,
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: '{{ frequencies[freq] }}'
+                                    }
+                                }],
+                                yAxes: [{
+                                    type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+                                    display: true,
+                                    position: 'left',
+                                    id: 'y-axis-1',
+                                    ticks: {
+                                        beginAtZero: true
+                                    },
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: 'Count'
+                                    }
+                                },
+                                    {
+                                        type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+                                        display: true,
+                                        position: 'right',
+                                        id: 'y-axis-2',
+                                        ticks: {
+                                            beginAtZero: true
+                                        },
+                                        scaleLabel: {
+                                            display: true,
+                                            labelString: 'Duration in seconds'
+                                        }
+                                    }],
+                            }
+                            // fin de l'ajout
+
+                        }
+                    });
+                };
+
+            </script>
+
+        {% endblock %}
+{% endblock %}

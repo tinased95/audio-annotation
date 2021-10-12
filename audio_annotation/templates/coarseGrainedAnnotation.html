@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coarse Grained Annotation</title>
+    <link rel="stylesheet" href="/static/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/css/materialicons.css">
+    <link rel="stylesheet" href="/static/css/materialize.min.css">
+    <link rel="stylesheet" href="/static/css/bootstrap-steps.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/static/css/main.css">
+
+    <script type="text/javascript" src="/static/js/lib/jquery-2.2.3.min.js"></script>
+    <script type="text/javascript" src="/static/js/lib/bootstrap-session-timeout.js"></script>
+    <script type="text/javascript" src="/static/js/lib/bootstrap.min.js"></script>
+
+    <script type="text/javascript" src="/static/js/lib/materialize.js"></script>
+    <script type="text/javascript" src="/static/js/lib/materialize.min.js"></script>
+
+    {{ JSGlue.include() }}
+
+</head>
+<body>
+<header class="site-header">
+    <nav class="navbar navbar-expand-md navbar-dark bg-steel">
+        <div class="container" style="width:100% !important;">
+            <a class="navbar-brand mr-4" href="/">Audio Annotation</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle"
+                    aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarToggle">
+                <div class="navbar-nav mr-auto">
+                    <a class="nav-item nav-link" href="{{ url_for('index') }}">Home</a>
+                    <a class="nav-item nav-link" href="{{ url_for('progress') }}">Progress</a>
+                </div>
+
+                <div class="navbar-collapse collapse justify-content-between align-items-center w-100"
+                     id="collapsingNavbar2">
+                    <p class="navbar-nav mx-auto text-md-center text-left" id="title">Coarse Grained</p>
+                </div>
+                <!-- Navbar Right Side -->
+                <div class="navbar-nav">
+                    {% if current_user.is_authenticated %}
+                        <a class="nav-item navbar-text">{{ current_user.email }}</a>
+                        <a class="nav-item nav-link"
+                           href="{{ url_for('logout', action='btn-logout', annotation_type='cg') }}">Logout</a>
+                    {% else %}
+                        <a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a>
+
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>&nbsp;
+<div class="right" style="padding-top: 10px;margin-bottom: 100px;">
+    <a class="modal-trigger right btn indigo  darken-4" id="instructionsbtn"
+       href="#instructions-modal" style="display:none;">Instructions</a>
+</div>
+<!-- Modal Structure -->
+<div id="instructions-modal" class="modal">
+    <div class="modal-footer">
+        <a class=" modal-action modal-close btn-flat">Close</a>
+    </div>
+    <div class="modal-content">
+        <div id="instructions-container">
+            <h6>
+                <b>Instructions:</b>
+                <ul style="padding-left:2em">
+                    <li><i class="fa fa-arrow-right"></i> Please listen to each audio file and select “yes” or ”no”
+                        based on
+                        whether you can hear any speech or something that sounds like speech. If unsure, select “yes”.
+                        You
+                        can listen to the audio as many times as you want.
+                    </li>
+                    <li>
+                        <i class="fa fa-arrow-right"></i> Speech means “human voice forming words”, regardless of the
+                        source
+                        of the sound. Speech heard from TV, radio, or phone is still speech.
+                        <ul style="padding-left:5em">
+                            <li>&bull; These also count as speech: singing, crowds, TV
+                                announcers,
+                                a recording.
+                            </li>
+                            <li>&bull; Also speech: unintelligible speech, where you can clearly
+                                hear speech but can’t quite understand individual
+                                words. Example: people talking in a party.
+                            </li>
+                            <li>&bull; Wordless sounds are not speech: humming a tune, coughing,
+                                sneezing, snoring, wordless yelling.
+                            </li>
+                        </ul>
+                    </li>
+                    <li><i class="fa fa-arrow-right"></i> You can flag a file. Flag if you find something very unusual,
+                        the
+                        audio doesn’t quite fall into speech / not
+                        speech , or if the file requires special attention. When flagging, you will be able to write the
+                        reason for
+                        the flagging.
+                        <ul style="padding-left:5em">
+                            <li>&bull; Examples: a recording that is entirely loud static noise;;
+                                a parrot speaking.
+                            </li>
+                        </ul>
+                    </li>
+                    <li><i class="fa fa-arrow-right"></i> You can go back to previous annotations in the same batch to
+                        change
+                        your response. Click on the annotation
+                        task in the progress bar to change the previous task. You cannot go forward beyond the current
+                        task,
+                        marked
+                        as (?).
+                    </li>
+                </ul>
+                <br>
+
+                <hr>
+                <hr>
+
+                <b>The progress bar on the bottom of the page shows an overview of the current batch:</b>
+                <ul style="padding-left:2em">
+                    <li><i class="fa fa-arrow-right"></i> Check mark (<i class="fa fa-check" style="color:#00C853;"></i>)
+                        indicates that the file has been labeled as speech.
+                    </li>
+                    <li><i class="fa fa-arrow-right"></i> Cross mark (<i class="fa fa-times" style="color:#007bff;"></i>)
+                        indicates that the file has been labeled as not
+                        speech.
+                    </li>
+                    <li><i class="fa fa-arrow-right"></i> Explanation mark (<i class="fa fa-exclamation"
+                                                                               style="color:#D50000;"></i>) indicates
+                        that the file has been flagged.
+                    </li>
+                    <li><i class="fa fa-arrow-right"></i> A star mark (<i class="fa fa-star" style="color:grey;"></i>)
+                        the end of a batch - a good time to rest or switch
+                        tasks.
+                    </li>
+                    <li><i class="fa fa-arrow-right"></i> Question mark (<i class="fa fa-question"
+                                                                            style="color:#007bff;"></i>) shows the
+                        current task.
+                    </li>
+                    <li><i class="fa fa-arrow-right"></i> Empty circle means that the task has not been annotated yet.
+                    </li>
+                </ul>
+
+                <img src="/static/img/progress_bar.png" alt="Progress bar">
+                <br>
+                <b>Keyboard shortcuts:</b>
+                <ul style="padding-left:2em">
+                    <li>&bull; Yes: Y</li>
+                    <li>&bull; No: N</li>
+                    <li>&bull; Replay: R/space bar</li>
+                    <li>&bull; Flag: F</li>
+                    <li>&bull; pause/play: P</li>
+                    <li>&bull; Instructions: I</li>
+
+                </ul>
+            </h6>
+        </div>
+    </div>
+</div>
+
+
+<div id="modal_flag" class="modal" tabindex="-1">
+    <form name="modalForm">
+    <div class="modal-content">
+        <h4>Flag File</h4>
+        <p> Please write a description about this file.</p>
+         <div class="form-group">
+             <input required id='description' placeholder="Description" maxlength="1000"/>
+         </div>
+    </div>
+    <div class="modal-footer">
+        <a href="#" class="modal-close btn-flat" style="text-decoration: none;">Cancel</a>
+        <a id="ok" class="modal-close btn indigo darken-4 ok" ng-disabled="inputForm.$invalid"  style="color: white;" >Flag</a>
+    </div>
+        </form>
+</div>
+
+
+<div class="container">
+    <div class="wrapper">
+        <div class='text-center' id="startButtonDiv">
+            <button class="btn deep-orange lighten-2 btn-large" id="startButton"
+                    style="color:black;text-transform: none;">Begin
+            </button>
+            <br>
+        </div>
+
+        <div class="card" id="instructionDiv" style="display:none">
+            <div class="card-body" id="instructions">Loading...</div>
+        </div>
+        <br>
+        <div id="audioDiv" style="display:none">
+            <audio id="audio_player" onplay="volume_up_update()"></audio>
+            <button class="btn indigo darken-4" id="replayButton" style="width:5vw; padding: 0; "><i
+                    class="material-icons" id="replayicon">replay</i></button>
+            <button class="btn indigo darken-4" id="stopButton" style="width:5vw; padding: 0; "><i
+                    class="material-icons" id="play_pause">pause_circle_filled</i></button>
+            <i class="material-icons" id="indicator">volume_up</i>
+            <span id="timeline" style="display: none;"></span>
+            <p style="display:none" id="loading"><img src="/static/img/loading.gif" alt="Loading..." width="32"
+                                                      height="32"> Loading Next file</p>
+        </div>
+        <br>
+        <div id="batch_numberDiv" style="display:none">
+            <p id="file_number">Loading...</p>
+        </div>
+        <div id="buttonChoiceDiv" style="display:none">
+            <button class="btn green accent-4" id="trueButton" style="margin-right:15px; width:20vw;">Yes (Y)</button>
+            <button class="btn  blue lighten-1" id="falseButton" style="margin-left:15px; width:20vw;">No (N)</button>
+            <a href="#modal_flag" type="button" class="btn flag modal-trigger red accent-4" id="flagButton"
+               data-trigger="modal_flag" style="float: right;">Flag (F)</a>
+        </div>
+
+        <div id="last_task" style="display:none">
+            <div class="alert alert-success"> You have successfully finished a batch! You can go back and edit the
+                previous files or click the button below to continue.
+            </div>
+            <button class="btn green accent-4" id="loadNextBatch" style="margin-right:15px; width:20vw;"
+                    onclick="updateFileInfo()">Load Next Batch
+            </button>
+        </div>
+        <br>
+
+
+    </div>
+
+</div>
+<div class="steps_container">
+    <ul class="steps" id="steps"></ul>
+</div>
+<br>
+<div id="confirmation" class="alert alert-success" style="display:none">
+    <strong>Success!!</strong> Moving onto next audio file
+</div>
+
+<div id="previousConfirmation" class="alert alert-success" style="display:none">
+    <strong>Success!!</strong> Previous annotation has been updated
+</div>
+<div id="alertinfo" class="alert alert-info" style="display:none">
+    {#            <strong>All files have been annotated. Thank you!</strong>#}
+</div>
+
+<div id="alerterror" class="alert alert-danger" style="display:none">
+</div>
+<script type="text/javascript" src="/static/js/src/step_progress.js"></script>
+
+<script>
+    let instructionsViewed = false
+    let batch_size;
+    let instruction;
+    let latest;
+    let num_in_batch;
+    let batch_number;
+    let batch_id;
+    let task_id;
+    let numReplay = 0;
+    let cgsegment_id;
+    let audiofile_id;
+    let patient_name;
+    let previous_labels_so_far;
+    let fileLength = 1; //2000
+
+    function volume_up_update() {
+        $('#loading').attr('style', 'display:none');
+        $('#indicator').attr('style', 'display:block');
+        $("#indicator").html("volume_up");
+        $("#play_pause").html("pause_circle_filled");
+    }
+
+    function getAudio() {
+        numReplay = 0;
+        if (document.getElementById("audio_source"))
+            document.getElementById("audio_source").remove();
+        if (document.getElementById("audio_player"))
+            document.getElementById('audio_player').pause();
+        document.getElementById("audio_player").remove();
+        let player = document.createElement("audio");
+        player.setAttribute('id', 'audio_player');
+
+        let source = document.createElement("source");
+        source.setAttribute('id', 'audio_source');
+        source.setAttribute('type', 'audio/mp3');
+        source.setAttribute('src', "getFile?patient_name=" + patient_name + "&audiofile_id=" + audiofile_id + "&cgsegment_id=" + cgsegment_id);
+        player.appendChild(source);
+
+        document.getElementById('audioDiv').appendChild(player);
+        document.getElementById("audio_player").setAttribute("onplay", "volume_up_update()");
+        document.getElementById('audio_player').play();
+        volume_up_update();
+
+        $("#audio_player").bind('ended', function () {
+            $('#loading').attr('style', 'display:none');
+            $('#indicator').attr('style', 'display:block');
+            $("#indicator").html("volume_mute");
+            $("#play_pause").html("play_circle_filled")
+        });
+
+        document.getElementById("audio_player").ontimeupdate = function () {
+            var audioplayer = document.getElementById("audio_player");
+            document.getElementById("timeline").innerHTML = "Time: " + audioplayer.currentTime.toFixed(2) + " / " + audioplayer.duration.toFixed(2)
+        };
+        $("#timeline").attr('style', 'display:block');
+    }
+
+    // go to a specific task in the past
+    function updatePreviousFileInfo(num_in_batch_requested) {
+        numReplay = 0;
+        $.get(
+            "coarseGrainedAnnotation/getPreviousFileInfo/?batch_number=" + batch_number + "&num_in_batch=" + num_in_batch_requested, "&current_task=" + task_id,
+            function (data) {
+                if (typeof data === 'string') {
+                    alert("Sorry, you cannot go to this task!")
+                } else {
+                    show_task();
+                    latest = data.latest;
+                    num_in_batch = data.num_in_batch;
+                    batch_id = data.batch_id;
+                    task_id = data.task_id;
+                    batch_size = data.batch_size;
+                    batch_number = data.batch_number;
+                    cgsegment_id = data.cgsegment_id;
+                    audiofile_id = data.audiofile_id;
+                    patient_name = data.patient_name;
+                    previous_labels_so_far = data.previous_labels_so_far;
+                    labeled = data.labeled;
+                    document.getElementById("description").value = data.description
+                    {#instruction = data.instruction;#}
+                    $("#file_number").html("File " + (num_in_batch) + "/" + batch_size + 'batch_id:' + batch_id + ' task_id:' + task_id + ", batch_number:" + batch_number);
+                    $("#instructions").html('Is there speech, or something that sounds like speech? Any kind of speech will do, including from a TV, from a recording, or unintelligible speech. <br><br> Click “Instructions” for a more detailed definition.\n');
+                    timeoutButtons();
+                    getAudio();
+
+                    load_steps(false, updatePreviousFileInfo, previous_labels_so_far);
+
+                }
+
+            }
+        );
+    }
+
+    function updateFileInfo() {
+
+        // load instructions screen
+        show_task();
+
+        numReplay = 0;
+        $.get(
+            "coarseGrainedAnnotation/getNextFileInfo/",
+            function (data) {
+                if (typeof data === 'string') {
+                    $("#instructionDiv").hide();
+                    $("#audioDiv").hide();
+                    $("#batch_numberDiv").hide();
+                    $("#buttonChoiceDiv").hide();
+                    $("#steps").hide();
+                    document.getElementById('audio_player').pause();
+                    $("#alertinfo").html(data);
+                    $("#alertinfo").attr('style', 'display:block');
+                } else {
+                    num_in_batch = data.num_in_batch;
+                    latest = data.num_in_batch - 1;
+                    batch_id = data.batch_id;
+                    task_id = data.task_id;
+                    batch_size = data.batch_size;
+                    batch_number = data.batch_number;
+                    cgsegment_id = data.cgsegment_id;
+                    audiofile_id = data.audiofile_id;
+                    patient_name = data.patient_name;
+                    previous_labels_so_far = data.previous_labels_so_far;
+
+                    document.getElementById("description").value = '';
+
+                    $("#file_number").html("File " + (num_in_batch) + "/" + batch_size + 'batch_id:' + batch_id + ' task_id:' + task_id + ", batch_number:" + batch_number);
+                    $("#instructions").html('Is there speech, or something that sounds like speech? Any kind of speech will do, including from a TV, from a recording, or unintelligible speech. <br><br> Click “Instructions” for a more detailed definition.\n');
+                    timeoutButtons();
+                    getAudio(); // get file content
+                    load_steps(false, updatePreviousFileInfo, previous_labels_so_far);
+
+                }
+            }
+        );
+    }
+
+    function timeoutButtons() {
+        $("#trueButton").attr("disabled", "disabled");
+        $("#falseButton").attr("disabled", "disabled");
+        $(document).off('keydown')
+        {#$(document).off('keypress')#}
+        setTimeout(function () {
+            document.querySelector('#falseButton').removeAttribute('disabled');
+            document.querySelector('#trueButton').removeAttribute('disabled');
+            $(document).on('keydown', function (e) {
+                handle_keys(e)
+            })
+        }, fileLength);
+
+    }
+
+    // good practice
+    function flagFile() {
+        $.ajax({
+            url: "/coarseGrainedAnnotation/flagFile",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({
+                description: document.getElementById('description').value,
+                batch_id: batch_id,
+                num_in_batch: num_in_batch,
+                batch_number: batch_number
+            }),
+            success: function (data) {
+                if (data.msg === 'last_task') {
+                    document.getElementById('audio_player').pause();
+                    show_batch_end();
+                    latest = num_in_batch + 1;
+                    previous_labels_so_far = data.previous_labels_so_far
+                    load_steps(true, updatePreviousFileInfo, previous_labels_so_far);
+                } else if (data.msg !== 'success') {
+                    show_end_or_error(data.msg);
+                } else {
+                    $("#confirmation").attr('style', 'display:block'); // change its location
+                    setTimeout(function () {
+                        $("#confirmation").attr('style', 'display:none')
+                    }, 2000);
+                    updateFileInfo();
+                }
+            }
+        })
+
+    }
+
+    function show_batch_end() {
+        document.getElementById('audio_player').pause();
+        $("#instructionDiv").hide();
+        $("#audioDiv").hide();
+        $("#batch_numberDiv").hide();
+        $("#buttonChoiceDiv").hide();
+        $("#last_task").attr('style', 'display:block');
+    }
+
+    function show_end_or_error(msg) {
+        document.getElementById('audio_player').pause();
+        $("#last_task").hide();
+        $("#instructionDiv").hide();
+        $("#audioDiv").hide();
+        $("#batch_numberDiv").hide();
+        $("#buttonChoiceDiv").hide();
+        $("#steps").hide();
+        $("#alerterror").html(msg);
+        $("#alerterror").attr('style', 'display:block');
+    }
+
+    function show_task() {
+        document.getElementById('audio_player').pause();
+        $('#startButtonDiv').attr('style', 'display:none');
+        $("#instructionsbtn").attr('style', 'display:block');
+        $('#instructionChoiceDiv').attr('style', 'display:none');
+        $('#instructionDiv').attr('style', 'display:block');
+        $('#audioDiv').attr('style', 'display:block');
+        $('#buttonChoiceDiv').attr('style', 'display:block');
+        {#$('#batch_numberDiv').attr('style', 'display:block');#}
+        $("#last_task").hide();
+        $("#alerterror").hide();
+        {#$("#steps").attr('style', 'display:block');#}
+    }
+
+    function submitAnnotation(label) {
+        $("#trueButton").attr("disabled", "disabled");
+        $("#falseButton").attr("disabled", "disabled");
+
+        document.getElementById('audio_player').pause();
+
+
+        $('#loading').attr('style', 'display:block');
+        $('#indicator').attr('style', 'display:none');
+
+        var request = $.ajax({
+            url: "/coarseGrainedAnnotation/submitAnnotation",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({
+                label: label,
+                batch_id: batch_id,
+                num_in_batch: num_in_batch,
+                batch_number: batch_number,
+                cgsegment_id: cgsegment_id,
+                numReplay: numReplay
+            }),
+            success: function (data) {
+                if (data.msg === 'last_task') {
+                    document.getElementById('audio_player').pause();
+                    show_batch_end();
+                    latest = data.latest;
+                    previous_labels_so_far = data.previous_labels_so_far
+                    load_steps(true, updatePreviousFileInfo, previous_labels_so_far);
+                } else if (data.msg === undefined || data.msg !== 'success') {
+                    show_end_or_error(data.msg);
+                } else {
+                    $("#confirmation").attr('style', 'display:block'); // change its location
+                    setTimeout(function () {
+                        $("#confirmation").attr('style', 'display:none')
+                    }, 2000);
+
+                    updateFileInfo();
+
+                }
+            }
+        })
+    }
+
+    $('#startButton').click(function () {
+        var request = $.ajax({
+            url: "/saveTelemetry",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({
+                action: 'begin-btn',
+                annotation_type: 'cg'
+            }),
+        })
+        $("#instructionsbtn").attr('style', 'display:block');
+        updateFileInfo();
+    });
+
+    $('#ok').click(function () {
+        flagFile()
+    });
+
+    $('#replayButton').click(function () {
+        $("#play_pause").html('pause_circle_filled')
+
+        var time_paused = document.getElementById('audio_player').currentTime;
+        document.getElementById('audio_player').currentTime = 0;
+        document.getElementById('audio_player').pause();
+
+        document.getElementById('audio_player').play();
+        numReplay = numReplay + 1;
+        var request = $.ajax({
+            url: "/saveTelemetry",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({
+                action: 'replay-btn',
+                annotation_type: 'cg',
+                extra_info: time_paused
+            }),
+        })
+    });
+
+    $('#stopButton').click(function () {
+
+        if ($('#play_pause').html() == 'play_circle_filled') {
+            document.getElementById('audio_player').play();
+            $("#indicator").html("volume_up");
+            $('#play_pause').html('pause_circle_filled')
+            var request = $.ajax({
+                url: "/saveTelemetry",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    action: 'play-btn',
+                    annotation_type: 'cg',
+                    extra_info: document.getElementById('audio_player').currentTime
+                }),
+            })
+        } else {
+            document.getElementById('audio_player').pause();
+            $("#indicator").html("volume_mute");
+            $('#play_pause').html('play_circle_filled')
+            var request = $.ajax({
+                url: "/saveTelemetry",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    action: 'pause-btn',
+                    annotation_type: 'cg',
+                    extra_info:  document.getElementById('audio_player').currentTime
+                }),
+            })
+        }
+
+
+    });
+
+    $('#trueButton').click(function () {
+        submitAnnotation(true)
+    });
+
+
+    $('#falseButton').click(function () {
+        submitAnnotation(false)
+    });
+
+    $('.modal').modal();
+    {#$('#modal_coarse').modal()#}
+    {#$('#instructions-modal').modal();#}
+
+    $.sessionTimeout({
+        logoutUrl: Flask.url_for('logout', {action: 'inactive-logout', annotation_type: 'cg'}),
+        redirUrl: Flask.url_for('logout', {action: 'inactive-logout', annotation_type: 'cg'}),
+        warnAfter: 6000000, // 1 minutes 60000
+        redirAfter: 75000, // 15 seconds 75000
+        countdownMessage: 'Redirecting in {timer} seconds.',
+        annotation_type: 'cg',
+        task_id: task_id,
+        batch_number: batch_number
+    });
+
+    function handle_keys(e) {
+        if ($('.modal').is(':visible') == false) {
+
+            if ((e.keyCode || e.which) == 78) { //  n
+                $('#falseButton').click()
+            }
+            if ((e.keyCode || e.which) == 89) { //  y
+                $('#trueButton').click()
+            }
+            if ((e.keyCode || e.which) == 70) { // f
+                $('#modal_flag').modal('open');
+            }
+            if ((e.keyCode || e.which) == 82) { // r
+                $('#replayButton').click()
+            }
+            if ((e.keyCode || e.which) == 80) { // p
+                $('#stopButton').click()
+            }
+            if ((e.keyCode || e.which) == 32){ //space
+                $('#stopButton').click()
+            }
+
+            if ((e.keyCode || e.which) == 73) { // i
+                $('#instructions-modal').modal('open');
+            }
+
+
+        }
+    }
+
+
+    $(document).on('keydown', function (e) {
+        handle_keys(e)
+    })
+
+
+</script>
+</body>
+</html>

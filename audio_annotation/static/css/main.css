@@ -1,0 +1,184 @@
+body {
+    background: #fafafa;
+    color: #333333;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: #444444;
+}
+
+.btn, .btn-large {
+    border-radius: 5px;
+}
+
+.bg-steel {
+    background-color: #1a237e;
+}
+
+#confirmation {
+    width: 50%;
+    margin: auto;
+}
+
+#instructionsbtn {
+    margin-right: 10px;
+}
+
+.selected_border {
+    border: 2px solid black;
+}
+
+#loading {
+    font-weight: bold;
+    color: blue;
+}
+
+.modal {
+    max-height: fit-content !important;
+    z-index: 99000 !important;
+}
+
+.steps_container {
+    padding-top: 10px;
+    padding-bottom: 20px;
+    text-align: center;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+}
+
+
+.site-header .navbar-nav .nav-link {
+    color: #cbd5db;
+}
+
+.site-header .navbar-nav .nav-link:hover {
+    color: #ffffff;
+}
+
+.site-header .navbar-nav .nav-link.active {
+    font-weight: 500;
+}
+
+#buttonChoiceDiv {
+    margin: auto;
+}
+
+#session-timeout-dialog {
+    z-index: 7000 !important;
+}
+
+
+.backdrop {
+    background-color: transparent;
+    font-size: x-small;
+    top: 200px !important;
+}
+
+.material-tooltip {
+    color: black !important;
+    text-align: center;
+    border-radius: 5px;
+
+}
+
+.not_clickable {
+    background-color: grey !important;
+}
+
+.not_clickable .not_clickable:hover {
+    cursor: not-allowed !important;
+}
+
+.material-tooltip > span {
+    font-size: 0.7rem;
+}
+
+.content-section {
+    background: #ffffff;
+    padding: 10px 20px;
+    border: 1px solid #dddddd;
+    border-radius: 3px;
+    margin-bottom: 20px;
+    margin-top: 65px;
+}
+
+.article-title {
+    color: #444444;
+}
+
+a.article-title:hover {
+    color: #428bca;
+    text-decoration: none;
+}
+
+.article-content {
+    white-space: pre-line;
+}
+
+.article-img {
+    height: 65px;
+    width: 65px;
+    margin-right: 16px;
+}
+
+#instructionDiv {
+    margin-top: 50px;
+}
+
+.article-metadata {
+    padding-bottom: 1px;
+    margin-bottom: 4px;
+    border-bottom: 1px solid #e3e3e3
+}
+
+.article-metadata a:hover {
+    color: #333;
+    text-decoration: none;
+}
+
+.article-svg {
+    width: 25px;
+    height: 25px;
+    vertical-align: middle;
+}
+
+.account-img {
+    height: 125px;
+    width: 125px;
+    margin-right: 20px;
+    margin-bottom: 16px;
+}
+
+.account-heading {
+    font-size: 2.5rem;
+}
+
+tag:hover {
+    cursor: pointer;
+}
+
+tag.not_clickable:hover {
+    cursor: not-allowed;
+}
+
+#radio00 #radio00:hover {
+    cursor: not-allowed;
+}
+
+
+.loadinggif {
+    text-align: center;
+}
+
+#instructions {
+    font-size: large;
+}
+
+#instructions-modal {
+    max-height: 70% !important;
+}
+
+#instructions-container {
+    line-height: 10px;
+}

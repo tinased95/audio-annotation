@@ -1,0 +1,167 @@
+/*!
+ * Bootstrap Steps v1.0.2 (https://github.com/ycs77/bootstrap-steps)
+ * Copyright 2019 Lucas Yang <yangchenshin77@gmail.com>
+ * Licensed under MIT (https://github.com/ycs77/bootstrap-steps/blob/master/LICENSE)
+ */
+.steps {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    display: flex;
+    overflow-x: auto
+}
+
+.steps .step:first-child {
+    margin-left: 0
+}
+
+.steps .step:last-child {
+    margin-right: auto
+}
+
+.step:first-of-type .step-circle::before {
+    display: none
+}
+
+.step:last-of-type .step-content {
+    padding-right: 0
+}
+
+.step-content {
+    box-sizing: content-box;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    width: 2rem;
+    min-width: 2rem;
+    max-width: 3rem;
+    padding-top: .5rem;
+    padding-right: 1.2rem
+}
+
+.step-circle {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    color: #adb5bd;
+    border: 2px solid #adb5bd;
+    border-radius: 100%;
+    background-color: #fff
+}
+
+.step-circle::before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: -2px;
+    width: calc(2rem + 1rem - 1.5rem);
+    height: 2px;
+    transform: translate(-100%, -50%);
+    color: #adb5bd;
+    background-color: currentColor
+}
+
+.step-text {
+    color: #adb5bd;
+    word-break: break-all;
+    margin-top: .25em
+}
+
+.step-active .step-circle {
+    color: #007bff;
+    background-color: #fff;
+    border-color: #007bff
+}
+
+.step-active .step-circle::before {
+    color: #007bff
+}
+
+.step-active .step-text {
+    color: #007bff
+}
+
+.step-flag .step-circle {
+    color: #fff;
+    background-color: #dc3545;
+    border-color: #dc3545
+}
+
+.step-flag .step-circle::before {
+    color: #dc3545
+}
+
+.step-flag .step-text {
+    color: #dc3545
+}
+
+
+.step-false .step-circle {
+    color: #fff;
+    background-color: #0275d8;
+    border-color: #0275d8
+}
+
+.step-false .step-circle::before {
+    color: #0275d8
+}
+
+.step-false .step-text {
+    color: #0275d8
+}
+
+.step-success .step-circle {
+    color: #fff;
+    background-color: #28a745;
+    border-color: #28a745
+}
+
+.step-success .step-circle::before {
+    color: #28a745
+}
+
+.step-success .step-text {
+    color: #28a745
+}
+
+.step:hover .step-circle:hover{
+    background-color: #fff;
+    color: #0275d8;
+    border-color: #0275d8;
+  }
+
+
+.star_hoverable:hover{
+    color: blue;
+    /*border:2px solid blue;*/
+    /*border-radius:100%;*/
+  }
+
+
+
+
+  .star{
+    color: grey;
+    /*border:none !important;*/
+  }
+
+
+
+  .finish-star{
+    color: deeppink;
+    border-color:deeppink;
+  }
+
+.step-success .step-circle:hover{cursor: pointer;}
+.step-false .step-circle:hover{cursor: pointer;}
+.step-true .step-circle:hover{cursor: pointer;}
+.step-flag .step-circle:hover{cursor: pointer;}
+.star_hoverable .step-circle:hover{cursor:pointer;}
+.step-not-allowed .step-circle:hover{cursor:not-allowed;}
+.star_unhoverable .step-circle:hover{cursor:not-allowed;}
+
+/*# sourceMappingURL=bootstrap-steps.min.css.map */

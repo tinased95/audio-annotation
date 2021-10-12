@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %} Search Segments {% endblock %}
+{% block body %}
+<form class="form-inline" method="GET" action="/admin/playaudio">
+    <div class="input-group" style="margin-left: 2.5em;">
+        <label> <b>audiofile_id&nbsp;&nbsp;</b>
+            <input type="text" id="audiofile_id" name="audiofile_id" value={{ audiofile_id }}><br>
+        </label>
+    </div>
+    <div class="input-group" style="margin-left: 2.5em;">
+        <label> <b>cgsegment_id&nbsp;&nbsp;</b>
+            <input type="text" id="cgsegment_id" name="cgsegment_id" value={{ cgsegment_id }}><br>
+        </label>
+
+        <label> <b>patient_name&nbsp;&nbsp;</b>
+            <input type="text" id="patient_name" name="patient_name" value={{ patient_name }}><br>
+        </label>
+    </div>
+    <button type="submit" class="btn btn-success" style="margin-left: 2.5em;">Go !</button>
+</form>
+<div id="audioDiv">
+    <audio id="audio_player"></audio>
+</div>
+{% block javascript %}
+<script>
+    {#numReplay = 0;#}
+    if (document.getElementById("audio_source"))
+        document.getElementById("audio_source").remove();
+    if (document.getElementById("audio_player"))
+        document.getElementById('audio_player').pause();
+    document.getElementById("audio_player").remove();
+    let player = document.createElement("audio");
+    player.setAttribute('id', 'audio_player');
+    player.setAttribute('controls', 'controls');
+
+    let source = document.createElement("source");
+    source.setAttribute('id', 'audio_source');
+    source.setAttribute('type', 'audio/mp3');
+    console.log("/getFile?patient_name=" + "{{patient_name}}" + "&audiofile_id=" + {{audiofile_id}} +"&cgsegment_id=" + {{cgsegment_id}});
+    source.setAttribute('src', "/getFile?patient_name=" + "{{patient_name}}" + "&audiofile_id=" + {{audiofile_id}} +"&cgsegment_id=" + {{cgsegment_id}});
+    player.appendChild(source);
+
+    document.getElementById('audioDiv').appendChild(player);
+    document.getElementById('audio_player').play();
+</script>
+ {% endblock %}
+{% endblock %}

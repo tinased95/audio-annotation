@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+
+{% block title %}Test{% endblock %}
+{% block body %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col">
+                <center>
+
+                    <form class="form-inline" method="GET" action="/admin/test_workallocator">
+
+                        <div class="input-group" style="margin-left: 2.5em;">
+                            <label for="exampleInputPassword1">Select a record from 0 to {{ num_rows }} </label>
+                            <input type="text" class="form-control" name="line" , placeholder=" {{ line }}">
+                        </div>
+                        <button type="submit" class="btn btn-success" style="margin-left: 2.5em;">Go!</button>
+                    </form>
+                    <form class="form-inline" method="GET" action="/admin/test_workallocator">
+                        <button type="submit" class="btn btn-success" style="margin-left: 2.5em;" name="line"
+                                value="{{ line - 1 }}">Previous
+                        </button>
+                        <button type="submit" class="btn btn-success" style="margin-left: 2.5em;" name="line"
+                                value="{{ line + 1 }}">Next
+                        </button>
+                    </form>
+                    <hr>
+                </center>
+                <div>
+                    <canvas id="canvas" style="width:60%; height:500px;">
+                    </canvas>
+                </div>
+
+                <br>
+                <br>
+
+
+            </div>
+
+        </div>
+    </div>
+    {% block javascript %}
+        <!-- Bootstrap core JavaScript-->
+        {#  <script src="/static/vendor/jquery/jquery.min.js"></script>#}
+        <script src="/static/vendor/bootstrap/bootstrap.bundle.min.js"></script>
+
+        <!-- Core plugin JavaScript-->
+        <script src="/static/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+        <!-- Custom scripts for all pages-->
+        <script src="/static/js/lib/sb-admin-2.min.js"></script>
+
+        <!-- Page level plugins -->
+        <script src="/static/vendor/chart.js/Chart.min.js"></script>
+        <script src="/static/js/src/utils.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@0.7.7"></script>
+        <script>
+            var color = Chart.helpers.color;
+            var barChartData = {
+                labels: [{% for p in labels %}
+                    "{{p}}",
+                {% endfor %}],
+                datasets: [{
+                    type: 'bar',
+                    label: 'Count',
+                    backgroundColor: color(window.chartColors.blue).rgbString(),
+                    {#borderColor: window.chartColors.green,#}
+                    data: [
+                        {% for x in counts %}
+                            {{x|int}},
+                        {% endfor %}
+                    ],
+                    yAxisID: 'y-axis-1',
+                }
+                ]
+            };
+
+            window.onload = function () {
+                var ctx = document.getElementById('canvas').getContext('2d');
+                window.myBar = new Chart(ctx, {
+
+                    type: 'bar',
+                    data: barChartData,
+                    options: {
+                        responsive: true,
+                        title: {
+                            display: false,
+                            text: '{{line}}'
+                        },
+                        tooltips: {
+                            mode: 'index',
+                            intersect: false
+                        },
+
+                        scales: {
+                            xAxes: [{
+                                display: true,
+                                stacked: true,
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: 'Day'
+                                }
+                            }],
+
+                            yAxes: [{
+                                type: 'linear',
+                                display: true,
+                                stacked: true,
+                                scaleOverride: true,
+                                scaleSteps: 10,
+                                scaleStepWidth: 50,
+                                scaleStartValue: 0,
+                                max: 1000,
+                                position: 'left',
+                                id: 'y-axis-1',
+                                ticks: {
+                                    max: 10000,
+                                    min: 0,
+                                    stepSize: 1
+                                },
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: 'Count'
+                                }
+                            }],
+                        },
+                        plugins: {
+                            zoom: {
+                                pan: {
+                                    enabled: true,
+                                    mode: 'xy' // is panning about the y axis neccessary for bar charts?
+                                },
+                                zoom: {
+                                    enabled: true,
+                                    mode: 'x',
+                                    sensitivity: 3
+                                }
+                            }
+                        }
+                        // fin de l'ajout
+
+                    },
+
+                });
+            };
+
+        </script>
+
+    {% endblock %}
+{% endblock %}

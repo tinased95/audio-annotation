@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Fine Grained Annotation</title>
+    <link rel="stylesheet" href="/static/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/css/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/audio-annotator.css">
+    <link rel="stylesheet" href="/static/css/bootstrap-steps.min.css"/>
+
+    <link rel="stylesheet" type="text/css" href="/static/css/main.css">
+
+    <link rel="stylesheet" type="text/css" href="/static/css/rangeslider.css">
+
+    {{ JSGlue.include() }}
+</head>
+<body>
+<header class="site-header">
+    <nav class="navbar navbar-expand-md navbar-dark bg-steel">
+        <div class="container" style="width:100% !important;">
+            <a class="navbar-brand mr-4" href="/">Audio Annotation</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle"
+                    aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarToggle">
+                <div class="navbar-nav mr-auto">
+                    <a class="nav-item nav-link" href="{{ url_for('index') }}">Home</a>
+                    <a class="nav-item nav-link" href="{{ url_for('progress') }}">Progress</a>
+                </div>
+                <div class="navbar-collapse collapse justify-content-between align-items-center w-100"
+                     id="collapsingNavbar2">
+                    <p class="navbar-nav mx-auto text-md-center text-left" id="title"></p>
+                </div>
+                <!-- Navbar Right Side -->
+                <div class="navbar-nav">
+                    {% if current_user.is_authenticated %}
+                        <a class="nav-item navbar-text">{{ current_user.email }}</a>
+                        <a class="nav-item nav-link"
+                           href="{{ url_for('logout', action='btn-logout', annotation_type='fg') }}">Logout</a>
+                    {% else %}
+                        <a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a>
+
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<div class="right" style="padding-top: 10px;">
+    <a class="modal-trigger right btn indigo  darken-4" id="instructionsbtn"
+       href="#instructions-modal">Instructions</a>
+</div>
+
+<!-- Modal Structure -->
+<div id="instructions-modal" class="modal">
+    <div class="modal-footer">
+        <a class=" modal-action modal-close btn-flat">Close</a>
+    </div>
+    <div class="modal-content">
+        <div id="instructions-container"></div>
+    </div>
+</div>
+
+<!-- Modal Structure -->
+<div id="modal_flag" class="modal">
+    <div class="modal-content">
+        <h4>Flag File</h4>
+        <p> Please write a description about this file.</p>
+        <textarea required id='description' placeholder="Description" maxlength="1000"></textarea>
+    </div>
+    <div class="modal-footer">
+        <a href="#" class="modal-close btn-flat" style="text-decoration: none;">Cancel</a>
+        <a id="ok" class="modal-close btn indigo darken-4 ok" style="color: white;">Flag</a>
+    </div>
+</div>
+&nbsp;
+
+<div id="no_annotation" class="alert alert-info" style="display:none; margin:auto;">
+</div>
+{#    <p class="text-center h5" id='no_annotation' style="display:none" >Currently you don't have any fine grained annotation tasks!</p>#}
+<!-- <button class="background_color">click</button> -->
+
+<div class="annotation" style="display:none">
+    <div class="audio_visual"></div>
+    <div class="play_bar"></div>
+    <div class="zoom_size center">
+        <button type="button" class="btn btn-info  indigo darken-4 btn-sm" id='undobtn' disabled>Undo</button>
+        <button type="button" class="btn btn-info  indigo darken-4 btn-sm" id='redobtn' disabled
+                style="margin-right:30px;">Redo
+        </button>
+    </div>
+    <div id="batch_numberDiv" style="display:none"><p id="file_number">Loading...</p></div>
+    <div class="mytable"></div>
+    <div class="submit_container">
+
+    </div>
+    <br>
+
+</div>
+
+<p style="display:none;" class="loadinggif" id="loading"><img src="/static/img/loading.gif" alt="Loading..." width="32"
+                                                              height="32"> Loading File</p>
+
+<div id="last_task" style="display:none">
+    <div class="alert alert-success"> You have successfully finished a batch! You can go back and edit the previous
+        files or click the button below to continue.
+    </div>
+    <button class="btn green accent-4" id="loadNextBatch" style="margin-right:15px; width:20vw;">Load Next Batch
+    </button>
+</div>
+<div class="steps_container">
+    <ul class="steps" id="steps"></ul>
+</div>
+
+<div id="confirmation" class="alert alert-success" style="display:none;">
+    <strong>Success!!</strong> Moving onto next audio file
+</div>
+
+<script type="text/javascript" src="/static/js/lib/wavesurfer.js"></script>
+<script type="text/javascript" src="/static/js/lib/jquery-2.2.3.min.js"></script>
+<script type="text/javascript" src="/static/js/lib/bootstrap-session-timeout.js"></script>
+<script type="text/javascript" src="/static/js/lib/bootstrap.min.js"></script>
+<script type="text/javascript" src="/static/js/lib/materialize.js"></script>
+<script type="text/javascript" src="/static/js/lib/materialize.min.js"></script>
+
+<script type="text/javascript" src="/static/js/lib/wavesurfer.min.js"></script>
+
+<script type="text/javascript" src="/static/js/lib/wavesurfer.spectrogram.min.js"></script>
+<script type="text/javascript" src="/static/js/colormap/colormap.min.js"></script>
+<script type="text/javascript" src="/static/js/lib/rangeslider.min.js"></script>
+<script type="text/javascript" src="/static/js/lib/rangeslider.js"></script>
+
+
+<script type="text/javascript" src="/static/js/src/message.js"></script>
+<script type="text/javascript" src="/static/js/src/wavesurfer.regions.js"></script>
+<script type="text/javascript" src="/static/js/src/wavesurfer.drawer.extended.js"></script>
+<script type="text/javascript" src="/static/js/src/wavesurfer.labels.js"></script>
+<script type="text/javascript" src="/static/js/src/components.js"></script>
+<script type="text/javascript" src="/static/js/src/annotation_stages.js"></script>
+<script>
+    function show_batch_end(my) {
+        $(".annotation").hide();
+        $("#last_task").attr('style', 'display:block');
+        $("#instructionsbtn").hide();
+        var current_pass = my.currentTask.annotationTag[0]
+
+        $("#loadNextBatch").one("click", function () {
+            {#console.log("load next file!!!!!!!!!!!!!!!!!!!!!!!!!")#}
+            my.load_next_file_info(current_pass);
+        });
+    }
+</script>
+<script type="text/javascript" src="/static/js/src/step_progress.js"></script>
+<script type="text/javascript" src="/static/js/src/main.js" defer></script>
+
+
+<script>
+    let latest;
+    let batch_id;
+    let task_id;
+    let num_in_batch;
+    let batch_size;
+    let batch_number;
+    let fgsegment_id;
+    let popup;
+    let previous_labels_so_far;
+    let pass_id;
+    let speech_annotations;
+    // let dataUrl
+    let annotator;
+    $('#loading').attr('style', 'display:block');
+    $("#submit_annotation").attr("disabled", "disabled");
+    $(".flag").attr("disabled", "disabled");
+    $.get( // bad duplication at line 431 main.js
+        "fineGrainedAnnotation/getNextFileInfo/",
+        function (data) {
+
+            if (typeof data === 'string') {
+                $('#no_annotation').attr('style', 'display:inline-block;');
+                $("#no_annotation").html(data);
+                $('.annotation').attr('style', 'display:none');
+                $('#last_task').hide();
+                $('#loading').attr('style', 'display:none');
+                {#$("#alertinfo").html(data);#}
+                {#$("#alertinfo").attr('style', 'display:block');#}
+            } else {
+                var dataUrl = {
+                    "visualization": data.visualization,
+                    "annotationTag": data.annotationTag,
+                    "instructions": data.instructions
+                };
+                latest = data.num_in_batch - 1;
+                batch_id = data.batch_id;
+                task_id = data.task_id;
+                num_in_batch = data.num_in_batch;
+                batch_size = data.batch_size;
+                batch_number = data.batch_number;
+                cgsegment_id = data.cgsegment_id;
+                audiofile_id = data.audiofile_id;
+                patient_name = data.patient_name;
+                popup = data.popup;
+                previous_labels_so_far = data.previous_labels_so_far;
+                pass_id = data.pass_id;
+                speech_annotations = data.speech_annotations;
+                {#console.log(popup)#}
+                $('input[type="range"]').rangeslider();
+                annotator = new Annotator();
+                annotator.instructionsViewed = popup
+                {#console.log(annotator.instructionsViewed)#}
+                // Load the first audio annotation task
+                annotator.loadTask(dataUrl);
+                {#console.log(annotator.instructionsViewed)#}
+                $("#last_task").hide()
+                $('#no_annotation').hide();
+                $('.annotation').attr('style', 'display:block');
+                $("#instructionsbtn").attr('style', 'display:block');
+                $("#file_number").html("File " + (num_in_batch) + "/" + batch_size + ' id:' + batch_id + ' task_id:' + task_id + ", batch_number:" + batch_number);
+                load_steps(false, annotator.load_previous_file_info, previous_labels_so_far, annotator)
+                {#document.querySelector("#submit_annotation").removeAttribute('disabled');#}
+                {#document.querySelector(".flag").removeAttribute('disabled');#}
+                $('#loading').attr('style', 'display:none');
+                console.log("herereerer")
+            }
+
+        }
+    );
+    $('.modal').modal();
+    {#$('#modal_flag').modal();#}
+    $.sessionTimeout({
+
+        logoutUrl: Flask.url_for('logout', {action: 'inactive-logout', annotation_type: 'fg'}),
+        redirUrl: Flask.url_for('logout', {action: 'inactive-logout', annotation_type: 'fg'}),
+        warnAfter: 60000, // 5 minutes 300000
+        redirAfter: 75000, // 15 seconds 315000
+        countdownMessage: 'Redirecting in {timer} seconds.',
+        annotation_type: 'fg',
+        task_id: task_id,
+        batch_number: batch_number
+    });
+
+    function handle_keys(e) {
+        if ($('.modal').is(':visible') == false) {
+            if ((e.keyCode || e.which) == 70) { // f
+                $('#modal_flag').modal('open');
+            }
+
+            if ((e.keyCode || e.which) == 73) { // i
+                $('#instructions-modal').modal('open');
+            }
+
+            if (e.ctrlKey && e.key === 'z') {
+                $('#undobtn').click();
+            }
+
+            if (e.ctrlKey && e.key === 'y') {
+                $('#redobtn').click();
+            }
+        }
+    }
+
+
+    $(document).on('keydown', function (e) {
+        handle_keys(e)
+    })
+</script>
+</body>
+</html>

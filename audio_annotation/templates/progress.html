@@ -1,0 +1,258 @@
+{% block head %}
+    <title>Progress</title>
+    <link rel="stylesheet" href="/static/css/bootstrap.css">
+{#    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">#}
+{#    <link rel="stylesheet" href="/static/css/bootstrap.css">#}
+{#    <link href="/static/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">#}
+{#    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"#}
+{#          rel="stylesheet">#}
+{#    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">#}
+    <!-- Custom styles for this template-->
+{#    <link href="/static/css/sb-admin-2.min.css" rel="stylesheet">#}
+    <link rel="stylesheet" type="text/css" href="/static/css/main.css">
+
+    {{ JSGlue.include() }}
+{% endblock %}
+{% block header %}
+    <header class="site-header">
+        <nav class="navbar navbar-expand-md navbar-dark bg-steel">
+            <div class="container" style="width:100% !important;">
+                <a class="navbar-brand mr-4" href="/">Audio Annotation</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle"
+                        aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarToggle">
+                    <div class="navbar-nav mr-auto">
+                        <a class="nav-item nav-link" href="{{ url_for('index') }}">Home</a>
+                        <a class="nav-item nav-link" href="{{ url_for('progress') }}">Progress</a>
+                    </div>
+                    <!-- Navbar Right Side -->
+                    <div class="navbar-nav">
+                        {% if current_user.is_authenticated %}
+                            <a class="nav-item navbar-text" style="color: white;">{{ current_user.email }}</a>
+                            <a class="nav-item nav-link"
+                               href="{{ url_for('logout', action='btn-logout', annotation_type='progress') }}">Logout</a>
+                        {% else %}
+                            <a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a>
+
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+{% endblock %}
+
+{% block body %}
+
+    <div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <center>
+                <p style="margin-top: 20px;">
+                    <b>Hello </b><code> {{ firstname }} {{ lastname }}</code>, below is the detail of your work done so
+                    far. Thank you for all your efforts!</p>
+
+                <div class="col-sm-4">
+                    <h4 class="small font-weight-bold"># Files annotated:
+                        <code> {{ total_num_annotations_check }}</code> ,
+                        Avg time per task: <code>{{ avg_time_per_task }} s</code></h4>
+                    <h4 class="small font-weight-bold"># Previous clicks: <code> {{ n_previous_clicks }}</code> ,
+                        # Flagged: <code>{{ n_flagged }}</code></h4>
+                </div>
+
+                <div style="height:25px;"></div>
+
+                <hr>
+                <form class="form-inline" method="GET" action="/progress">
+                    <div class="input-group" style="margin-left: 2.5em;">
+                        {#						<div class="input-group-addon"><b>Patient</b></div>#}
+                        <label> <b>Frequency&nbsp;&nbsp;</b>
+                            <select class="form-control" name="freq">
+                                {% for key, value in frequencies.items() %}
+                                    {#                                {{ key,  value  }}#}
+                                    {% if key ==  freq %}
+                                        <option selected value="{{ key }}">{{ value }}</option>
+                                    {% else %}
+                                        <option value="{{ key }}">{{ value }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </label>
+
+                        <label> <b>&nbsp; Annotation type&nbsp;&nbsp;</b>
+                            <select class="form-control" name="annotationtype">
+                                {% if annotationtype ==  'cg' %}
+                                    <option value ='cg' selected>Coarse-grained</option>
+                                    <option value="fg">Fine-grained</option>
+                                {% else %}
+                                    <option value="cg">Coarse-grained</option>
+                                    <option value ="fg" selected>Fine-grained</option>
+                                {% endif %}
+
+                            </select>
+                        </label>
+                    </div>
+                    <div class="input-group" style="margin-left: 2.5em;">
+                        <label><b> Start </b>
+                            <input type="datetime-local" class="form-control" name="start_date"
+                                   value="{{ start_date }}">
+                        </label>
+
+                        <label><b>&nbsp; End </b>
+                            <input type="datetime-local" class="form-control" name="end_date"
+                                   value="{{ end_date }}">
+                        </label>
+                    </div>
+                    <button type="submit" class="btn btn-success" style="margin-left: 2.5em;">Go !</button>
+                </form>
+                <hr>
+            </center>
+            <div>
+                <canvas id="canvas" style="width:85%; height:85%;">
+                </canvas>
+            </div>
+
+            <br>
+            <br>
+
+
+        </div>
+        {#            <img src="/useractivity.png" alt="my plot" style="margin-bottom: 100px">#}
+
+    </div>
+    {% block javascript %}
+        <!-- Bootstrap core JavaScript-->
+ <script type="text/javascript" src="/static/js/lib/jquery-2.2.3.min.js"></script>
+        <script type="text/javascript" src="/static/js/lib/bootstrap.min.js"></script>
+        <script src="/static/vendor/bootstrap/bootstrap.bundle.min.js"></script>
+
+        <!-- Core plugin JavaScript-->
+        <script src="/static/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+        <!-- Custom scripts for all pages-->
+        <script src="/static/js/lib/sb-admin-2.min.js"></script>
+
+        <!-- Page level plugins -->
+        <script src="/static/vendor/chart.js/Chart.min.js"></script>
+        <script src="/static/js/src/utils.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@0.7.7"></script>
+
+        <script type="text/javascript" src="/static/js/lib/bootstrap-session-timeout.js"></script>
+
+        <script type="text/javascript" src="/static/js/lib/materialize.js"></script>
+        <script type="text/javascript" src="/static/js/lib/materialize.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@0.7.7"></script>
+        <script>
+            var color = Chart.helpers.color;
+            var barChartData = {
+                labels: [{% for x in xticks %}
+                    "{{x}}",
+                {% endfor %}],
+                datasets: [{
+                    type: 'bar',
+                    label: '#Annotation',
+                    backgroundColor: color(window.chartColors.green).rgbString(),
+                    borderColor: window.chartColors.green,
+                    data: [
+                        {% for num in num_annotations %}
+                            {{num}},
+                        {% endfor %}
+                    ],
+                    yAxisID: 'y-axis-1',	// ajout
+                }
+                    , {
+                        data: [
+                            {% for dur in durations %}
+                                {{dur}},
+                            {% endfor %}
+                        ],
+                        yAxisID: 'y-axis-2',	// ajout
+                        label: "Duration",
+                        fillColor: "green"
+                    }]
+            };
+
+
+            window.onload = function () {
+                var ctx = document.getElementById('canvas').getContext('2d');
+                {#ctx.canvas.height = 2000;#}
+                window.myBar = new Chart(ctx, {
+                    type: 'bar',
+                    data: barChartData,
+                    options: {
+                        responsive: true,
+                        tooltips: {
+                            mode: 'index',
+                            intersect: false
+                        },
+                        // ajouter ici
+                        scales: {
+                            xAxes: [{
+                                display: true,
+                                {#stacked: true,#}
+                                offset: true,
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: '{{ frequencies[freq] }}'
+                                }
+                            }],
+                            yAxes: [{
+                                type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+                                display: true,
+                                position: 'left',
+                                id: 'y-axis-1',
+                                ticks: {
+                                    beginAtZero: true
+                                },
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: 'Count'
+                                }
+                            },
+                                {
+                                    type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+                                    display: true,
+                                    position: 'right',
+                                    id: 'y-axis-2',
+                                    ticks: {
+                                        beginAtZero: true
+                                    },
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: 'Duration in seconds'
+                                    }
+                                }],
+                        },
+                        plugins: {
+                            zoom: {
+
+                                zoom: {
+                                    enabled: true,
+                                    mode: 'x',
+                                    drag: true,
+                                    sensitivity: 3
+                                }
+                            }
+                        }
+                        // fin de l'ajout
+
+                    }
+                });
+            };
+
+            $.sessionTimeout({
+                logoutUrl: Flask.url_for('logout', {action: 'inactive-logout', annotation_type: 'progress'}),
+                redirUrl: Flask.url_for('logout', {action: 'inactive-logout', annotation_type: 'progress'}),
+                warnAfter: 60000, // 1 minutes 60000
+                redirAfter: 75000, // 15 seconds 75000
+                countdownMessage: 'Redirecting in {timer} seconds.',
+                annotation_type: 'progress',
+                task_id: null,
+                batch_number: null
+            });
+        </script>
+    {% endblock %}
+{% endblock %}

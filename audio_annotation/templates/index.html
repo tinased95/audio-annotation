@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="/static/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/css/font-awesome.min.css">
+{#    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">#}
+    <link rel="stylesheet" href="/static/css/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/main.css">
+
+    <script type="text/javascript" src="/static/js/lib/jquery-2.2.3.min.js"></script>
+    <script type="text/javascript" src="/static/js/lib/bootstrap-session-timeout.js"></script>
+    <script type="text/javascript" src="/static/js/lib/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/static/js/lib/materialize.js"></script>
+    <script type="text/javascript" src="/static/js/lib/materialize.min.js"></script>
+    {{ JSGlue.include() }}
+</head>
+<body>
+<header class="site-header">
+    <nav class="navbar navbar-expand-md navbar-dark bg-steel">
+        <div class="container" style="width:100% !important;">
+            <a class="navbar-brand mr-4" href="/">Audio Annotation</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle"
+                    aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarToggle">
+                <div class="navbar-nav mr-auto">
+                    <a class="nav-item nav-link" href="{{ url_for('index') }}">Home</a>
+                    <a class="nav-item nav-link" href="{{ url_for('progress') }}">Progress</a>
+                </div>
+                <!-- Navbar Right Side -->
+                <div class="navbar-nav">
+                    {% if current_user.is_authenticated %}
+                        <a class="nav-item navbar-text">{{ current_user.email }}</a>
+                        <a class="nav-item nav-link" href="{{ url_for('logout', action='btn-logout') }}">Logout</a>
+                    {% else %}
+                        <a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a>
+                        <a class="nav-item nav-link" href="{{ url_for('register') }}">Register</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+&nbsp;
+<div class="container" role="main">
+    <div class="center-block text-center" style="margin-bottom: 100px;">
+        <div style="text-align: left; font-size: large;">
+           <p>
+            Welcome to the audio annotation tool. This tool is designed for annotating audio recordings (varying length
+            between 5 to 15 seconds long). <br>
+
+            You will be asked to perform two main types of annotations: coarse grained annotation will only ask you to
+            decide whether you hear speech or not, while fine grained annotation will ask you to mark specific sections
+            of the audio. Your progress is saved whenever you move to the next file, and you are welcome to switch
+            between coarse grained and fine grained annotation at any time!<br>
+        <p>
+
+        <ul>
+             <li><i class="fa fa-arrow-right"></i> Please remember that you are listening to recordings made by volunteers in
+                our research program, which may include personal information. Maintain strict privacy of everything you
+                hear.
+            </li>
+            <li><i class="fa fa-arrow-right"></i> Please be sure to use headphones rather than speakers. This is both because
+                the quality of audio is better, and to preserve the privacy of recordings.
+            </li>
+
+            <li><i class="fa fa-arrow-right"></i> Note that interactions with this tool and time will be recorded
+                automatically.
+            </li>
+            <li><i class="fa fa-arrow-right"></i> Please be as precise and focused as possible during the annotation process.
+                Try to finish a whole batch of annotation tasks at a time, without distractions. Batches are short,
+                typically no more than 10 tasks.
+            </li>
+        </ul>
+        <br>
+
+        <ul> <b>Requirements before starting:</b>
+            <li><i class="fa fa-star"></i> Laptop or desktop computer </li>
+            <li><i class="fa fa-star"></i> Headphone</li>
+            <li><i class="fa fa-star"></i> Quiet environment</li>
+            <li><i class="fa fa-star"></i> Concentration</li>
+        </ul>
+        <p>
+        <br>
+        Thank you for helping us annotate this audio set! This is part of a research program to help people with a
+        common, chronic lung disease. If you want to know more about this project, please visit <a href="http://wearcopd.ca/" target="_blank">http://wearcopd.ca/</a>
+        </p>
+        </div>
+
+        <a type="button" role="button" class="btn btn-lg  deep-orange lighten-2" href="{{ url_for('coarseGrainedAnnotation') }}"
+           style="color: black; text-transform: none; margin-right: 10px;">Coarse Grained Annotation</a>
+        <a type="button" role="button" class="btn btn-lg  deep-orange lighten-2" href="{{ url_for('fineGrainedAnnotation') }}"
+           style="color: black; text-transform: none;margin-left: 10px;">Fine Grained Annotation</a>
+    </div>
+</div>
+
+<script>
+    $.sessionTimeout({
+        logoutUrl: Flask.url_for('logout', {action: 'inactive-logout'}),
+        redirUrl: Flask.url_for('logout', {action: 'inactive-logout'}),
+        warnAfter: 60000, // 5 minutes 300000
+        redirAfter: 75000, // 15 seconds 315000
+        countdownMessage: 'Redirecting in {timer} seconds.'
+    });
+</script>
+</body>
+</html>

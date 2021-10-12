@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %} View Telemetry{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col ">
+                <div class="jumbotron p-3">
+                    <h2>View <b>Telemetry</b></h2>
+                    {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+
+                            {% for message in messages %}
+                                <div class="alert alert-success alert-dismissable" role="alert">
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="close">
+                                        <span aria-hidden="true">x</span>
+                                    </button>
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+
+                        {% endif %}
+                    {% endwith %}
+
+                    <table id="example" class="table table-hover table-striped">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>annotator_id</th>
+                            <th>ts</th>
+                            <th>action</th>
+                            <th>annotation_type</th>
+                            <th>task_id</th>
+                            <th>batch_number</th>
+                            <th>extra_info</th>
+                        </tr>
+                        </thead>
+
+                        {% for row in logs %}
+                            <tr>
+                                <td>{{ row.id }}</td>
+                                <td>{{ row.annotator_id }}</td>
+                                <td>{{ row.ts }}</td>
+                                <td>{{ row.action }}</td>
+                                <td>{{ row.annotation_type }}</td>
+                                <td>{{ row.task_id }}</td>
+                                <td>{{ row.batch_number }}</td>
+                                <td>{{ row.extra_info }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

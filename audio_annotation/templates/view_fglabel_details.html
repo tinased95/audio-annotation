@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Fine Grained Annotation</title>
+    <link rel="stylesheet" href="/static/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/css/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/audio-annotator.css">
+    <link rel="stylesheet" href="/static/css/bootstrap-steps.min.css"/>
+
+    <link rel="stylesheet" type="text/css" href="/static/css/main.css">
+
+    <link rel="stylesheet" type="text/css" href="/static/css/rangeslider.css">
+
+    {{ JSGlue.include() }}
+</head>
+<body>
+<header class="site-header">
+    <nav class="navbar navbar-expand-md navbar-dark bg-steel">
+        <div class="container">
+            <a class="navbar-brand mr-4" href="/">Audio Annotation</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle"
+                    aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarToggle">
+                <div class="navbar-nav mr-auto">
+                    <a class="nav-item nav-link" href="{{ url_for('index') }}">Home</a>
+{#                    <a class="nav-item nav-link" href="{{ url_for('about') }}">About</a>#}
+                </div>
+                <!-- Navbar Right Side -->
+                <div class="navbar-nav">
+                    {% if current_user.is_authenticated %}
+                        <a class="nav-item navbar-text">{{ current_user.email }}</a>
+                        <a class="nav-item nav-link"
+                           href="{{ url_for('logout', action='btn-logout', annotation_type='fg') }}">Logout</a>
+                    {% else %}
+                        <a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a>
+
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+
+{#    <p class="text-center h5" id='no_annotation' style="display:none" >Currently you don't have any fine grained annotation tasks!</p>#}
+<!-- <button class="background_color">click</button> -->
+<div class="annotation" style="display:none">
+    <div class="audio_visual"></div>
+    <div class="play_bar"></div>
+    <div id="batch_numberDiv"><p id="file_number">Loading...</p></div>
+    <div class="mytable"></div>
+</div>
+
+
+<script type="text/javascript" src="/static/js/lib/jquery-2.2.3.min.js"></script>
+<script type="text/javascript" src="/static/js/lib/bootstrap-session-timeout.js"></script>
+<script type="text/javascript" src="/static/js/lib/bootstrap.min.js"></script>
+<script type="text/javascript" src="/static/js/lib/materialize.js"></script>
+<script type="text/javascript" src="/static/js/lib/materialize.min.js"></script>
+
+<script type="text/javascript" src="/static/js/lib/wavesurfer.min.js"></script>
+
+<script type="text/javascript" src="/static/js/lib/wavesurfer.spectrogram.min.js"></script>
+<script type="text/javascript" src="/static/js/colormap/colormap.min.js"></script>
+<script type="text/javascript" src="/static/js/lib/rangeslider.min.js"></script>
+<script type="text/javascript" src="/static/js/lib/rangeslider.js"></script>
+
+
+<script type="text/javascript" src="/static/js/src/message.js"></script>
+<script type="text/javascript" src="/static/js/src/wavesurfer.regions.js"></script>
+<script type="text/javascript" src="/static/js/src/wavesurfer.drawer.extended.js"></script>
+<script type="text/javascript" src="/static/js/src/wavesurfer.labels.js"></script>
+<script type="text/javascript" src="/static/js/src/components.js"></script>
+<script type="text/javascript" src="/static/js/src/annotation_stages.js"></script>
+<script>let latest;
+       let batch_id;
+       let task_id;
+       let num_in_batch = 3;
+       let batch_size = 3;
+       let batch_number = 5;
+       let fgsegment_id;
+       let pass_id ='0'
+        let speech_annotations = []
+       // let dataUrl
+       let annotator;</script>
+<script type="text/javascript" src="/static/js/src/main.js" defer></script>
+
+
+<script>
+   $( document ).ready(function() {
+       let latest;
+       let batch_id;
+       let task_id;
+       let num_in_batch = 3;
+       let batch_size = 3;
+       let batch_number = 5;
+       let fgsegment_id;
+       // let dataUrl
+       let annotator;
+
+       var dataUrl = {
+           "visualization": 'waveform',
+           "annotationTag": ['Speech'],
+           "instructions": ['fsdfs']
+       };
+
+       cgsegment_id = 66669
+       audiofile_id = 7177
+       patient_name = 'copdpatient26'
+
+       annotator = new Annotator();
+       // Load the first audio annotation task
+       annotator.loadTask(dataUrl);
+       $("#last_task").hide()
+       $('.annotation').attr('style', 'display:block');
+       $("#file_number").html("File " + (num_in_batch) + "/" + batch_size + ' id:' + batch_id + ' task_id:' + task_id + ", batch_number:" + batch_number);
+   })
+</script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}Validate Annotators{% endblock %}
+{% block body %}
+<b><code>Validate CG</code></b>
+<br>
+{% for usr, content in cg_jaccard_indexes.items() %}
+User: {{usr}} <br>
+    {% for batch_number, values in content.items() %}
+        batch_number:{{ batch_number }}, (cgsegment_id, jaccard_index): {{ values }}
+        <br>
+{% endfor %}
+    <br><br>
+{% endfor %}
+
+<br>
+<b><code>Validate FG</code></b>
+<br>
+{% for usr, content in fg_jaccard_indexes.items() %}
+User: {{usr}} <br>
+    {% for batch_number, values in content.items() %}
+        batch_number:{{ batch_number }}, (cgsegment_id, jaccard_index): {{ values }}
+        <br>
+{% endfor %}
+    <br><br>
+{% endfor %}
+{% endblock %}

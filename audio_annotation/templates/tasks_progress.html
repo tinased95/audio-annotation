@@ -1,0 +1,182 @@
+{% extends 'base.html' %}
+
+{% block title %}Annotation Progress {% endblock %}
+{% block body %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col">
+                <center>
+                    <p style="margin-top: 20px;"><b>Patient: </b><code> {{ info.get('patient') }}</code></p>
+
+                    <div class="col-sm-4">
+                        <h4 class="small font-weight-bold">Completed<span
+                                class="float-right">{{ info.get('ratio') }}%</span></h4>
+                        <div class="progress mb-4">
+                            <div class="progress-bar bg-success" role="progressbar"
+                                 style="width: {{ info.get('ratio') }}%" aria-valuenow="{{ info.get('ratio') }}"
+                                 aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+
+
+                    <div style="height:25px;"></div>
+
+                    <hr>
+                    <form class="form-inline" method="GET" action="/admin/tasks_progress">
+                        <div class="input-group" style="margin-left: 2.5em;">
+                            {#						<div class="input-group-addon"><b>Patient</b></div>#}
+                            <label> <b>Patient&nbsp;&nbsp;</b>
+                                <select class="form-control" name="patient">
+                                    {% for p in patient_names %}
+                                        {% if p == info.get('patient') %}
+                                            <option selected>{{ p }}</option>
+                                        {% else %}
+                                            <option>{{ p }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+                            </label>
+                        </div>
+                        <div class="input-group" style="margin-left: 2.5em;">
+                            {#						<div class="input-group-addon"><b>Patient</b></div>#}
+                            <label> <b>Annotation type&nbsp;&nbsp;</b>
+                                <select class="form-control" name="annotationtype">
+                                    {% if annotationtype == 'cg' %}
+                                        <option selected>{{ annotationtype }}</option>
+                                        <option>fg</option>
+                                    {% elif annotationtype == 'fg' %}
+                                        <option selected>{{ annotationtype }}</option>
+                                        <option>cg</option>
+                                    {% endif %}
+                                </select>
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-success" style="margin-left: 2.5em;">Go !</button>
+                    </form>
+                    <hr>
+                </center>
+                <div>
+                    <canvas id="canvas">
+                    </canvas>
+                </div>
+
+                <br>
+                <br>
+
+
+            </div>
+
+        </div>
+    </div>
+    {% block javascript %}
+        <!-- Bootstrap core JavaScript-->
+        {#  <script src="/static/vendor/jquery/jquery.min.js"></script>#}
+        <script src="/static/vendor/bootstrap/bootstrap.bundle.min.js"></script>
+
+        <!-- Core plugin JavaScript-->
+        <script src="/static/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+        <!-- Custom scripts for all pages-->
+        <script src="/static/js/lib/sb-admin-2.min.js"></script>
+
+        <!-- Page level plugins -->
+        <script src="/static/vendor/chart.js/Chart.min.js"></script>
+        <script src="/static/js/src/utils.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
+
+        <script>
+
+            var color = Chart.helpers.color;
+            var barChartData = {
+                labels: [{% for item in labels %}
+                    "{{item}}",
+                {% endfor %}],
+                datasets: [{
+                    type: 'bar',
+                    label: 'Not Allocated',
+                    backgroundColor: color(window.chartColors.red).rgbString(),
+                    {#borderColor: window.chartColors.green,#}
+                    data: [
+                        {% for x in falses %}
+                            {{x}},
+                        {% endfor %}
+                    ],
+                    yAxisID: 'y-axis-1',
+                }, {
+                    type: 'bar',
+                    label: 'Allocated',
+                    backgroundColor: color(window.chartColors.blue).rgbString(),
+                    borderColor: window.chartColors.blue,
+                    data: [
+                        {% for x in trues %}
+                            {{x}},
+                        {% endfor %}
+                    ],
+                    yAxisID: 'y-axis-1',
+                },
+                    {
+                        type: 'bar',
+                        label: 'Finished',
+                        backgroundColor: color(window.chartColors.green).rgbString(),
+                        borderColor: window.chartColors.blue,
+                        data: [
+                            {% for x in finished %}
+                                {{x}},
+                            {% endfor %}
+                        ],
+                        yAxisID: 'y-axis-1',
+                    }
+                ]
+            };
+
+
+            window.onload = function () {
+                var ctx = document.getElementById('canvas').getContext('2d');
+                window.myBar = new Chart(ctx, {
+                    type: 'bar',
+                    data: barChartData,
+                    options: {
+                        responsive: true,
+                        title: {
+                            display: false,
+                            text: '{{info.get('patient')}}'
+                        },
+                        tooltips: {
+                            mode: 'index',
+                            intersect: false
+                        },
+
+                        scales: {
+                            xAxes: [{
+                                display: true,
+                                stacked: true,
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: 'Day'
+                                }
+                            }],
+
+                            yAxes: [{
+                                type: 'linear',
+                                display: true,
+                                stacked: true,
+                                position: 'left',
+                                id: 'y-axis-1',
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: 'Count'
+                                }
+                            }],
+                        },
+
+                        // fin de l'ajout
+
+                    },
+
+                });
+            };
+
+        </script>
+
+    {% endblock %}
+{% endblock %}

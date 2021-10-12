@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %} View CG Labels{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col ">
+                <div class="jumbotron p-3">
+                    <h2>View <b>CG Labels</b></h2>
+                    {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+
+                            {% for message in messages %}
+                                <div class="alert alert-success alert-dismissable" role="alert">
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="close">
+                                        <span aria-hidden="true">x</span>
+                                    </button>
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+
+                        {% endif %}
+                    {% endwith %}
+
+                    <table id="example" class="table table-hover table-striped">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Task_id</th>
+                            <th>Label</th>
+                            <th>submit_time</th>
+                        </tr>
+                        </thead>
+
+                        {% for row in labels %}
+                            <tr>
+                                <td>{{ row.id }}</td>
+                                <td>{{ row.task_id }}</td>
+                                <td>{{ row.label }}</td>
+                                <td>{{ row.submit_time }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

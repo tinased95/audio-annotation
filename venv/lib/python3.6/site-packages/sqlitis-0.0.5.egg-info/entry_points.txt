@@ -1,0 +1,3 @@
+[console_scripts]
+sqlitis = sqlitis.cli:main
+
