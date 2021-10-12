@@ -9,12 +9,12 @@ It is extended from [audio-annotator](https://github.com/CrowdCurio/audio-annota
 1. Admin page to view and manage tables. 
 
 
-### environmental variables:
-export EMAIL_SENDER= The email used for sending errors
-export EMAIL_PASSWORD= The email password
-export EMAIL_RECEIVER= The email used for receiving errors
-export  DB_NAME= Database name
-export  DB_USER= Database username
-export  DB_PASSWORD= Database password
-export FIRST_RUN=True # for the first time running the server, otherwise False
+#### environmental variables:
+* export EMAIL_SENDER= The email used for sending errors
+* export EMAIL_PASSWORD= The email password
+* export EMAIL_RECEIVER= The email used for receiving errors
+* export  DB_NAME= Database name
+* export  DB_USER= Database username
+* export  DB_PASSWORD= Database password
+* export FIRST_RUN=True # for the first time running the server, otherwise False
 
