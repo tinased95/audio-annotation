@@ -8,7 +8,7 @@ The annotation progress is splitted into two major steps: Coarse-grained and Fin
 In Coarse-grained, the annotator should only indicate the presence of a desired label. The audio files that have the label, will be moved to Fine-grained annotation for a deaper labeling potentially with different passes for one or more passes. 
 
 <kbd>
-![screenshots](https://github.com/tinased95/audio-annotation/blob/master/audio_annotation/images/course_grained.png?raw=true)
+![screenshots](audio_annotation/images/course_grained.png?raw=true)
 </kbd>
 
 ### Benefits:
