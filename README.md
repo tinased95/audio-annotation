@@ -7,9 +7,9 @@ It is extended from [audio-annotator](https://github.com/CrowdCurio/audio-annota
 The annotation progress is splitted into two major steps: Coarse-grained and Fine-grained.
 In Coarse-grained, the annotator should only indicate the presence of a desired label. The audio files that have the label, will be moved to Fine-grained annotation for a deaper labeling potentially with different passes for one or more passes. 
 
-<kbd>
+
 ![screenshots](audio_annotation/images/course_grained.png?raw=true)
-</kbd>
+
 
 ### Benefits:
 1. Admin page to view and manage tables. 
